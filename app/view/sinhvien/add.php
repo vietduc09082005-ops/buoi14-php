@@ -19,16 +19,16 @@
     <div class="mb-2">
         <label>Giới tính</label>
         <select name="gioi_tinh" class="form-control">
-            <option value="1">Nam</option>
-            <option value="0">Nữ</option>
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
         </select>
     </div>
     <div class="mb-2">
         <label>Lớp</label>
-        <select name="lop_id" class="form-control" required>
+        <select name="malop" class="form-control" required>
             <option value="">-- Chọn lớp --</option>
             <?php foreach ($danhsach_lop as $lop): ?>
-            <option value="<?= $lop['id'] ?>"><?= $lop['ten_lop'] ?></option>
+            <option value="<?= $lop['MALOP'] ?>"><?= $lop['TENLOP'] ?></option>
             <?php endforeach; ?>
         </select>
     </div>
