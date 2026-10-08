@@ -1,26 +1,39 @@
-<div class="sidebar d-flex flex-column">
-    <a href="index.php" class="text-white fs-4 px-3 mb-3 text-decoration-none">Quản Lý SV</a>
-    <hr class="text-secondary">
+<div class="sidebar bg-dark text-white p-3" style="width: 220px; min-height: 100vh;">
+    <h4 class="mb-4">QL Sinh Viên</h4>
 
-    <a href="index.php?controller=sinhvien" class="<?= ($_GET['controller'] ?? '') === 'sinhvien' ? 'active' : '' ?>">
-        <i class="bi bi-people"></i> Sinh viên
-    </a>
-    <a href="index.php?controller=monhoc">
-        <i class="bi bi-book"></i> Môn học
-    </a>
-    <a href="index.php?controller=diem">
-        <i class="bi bi-bar-chart-fill"></i> Điểm
-    </a>
-    <a href="index.php?controller=chuyencan">
-        <i class="bi bi-calendar-check"></i> Chuyên cần
-    </a>
-    <hr class="text-secondary">
-    <a href="index.php?controller=user">
-        <i class="bi bi-person-circle"></i> Tài khoản
-    </a>
-    <a href="index.php?controller=user&action=logout">
-        <i class="bi bi-box-arrow-right"></i> Đăng xuất
-    </a>
+    <ul class="nav flex-column">
+        <li class="nav-item mb-2">
+            <a class="nav-link text-white" href="index.php">Trang chủ</a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-white" href="index.php?controller=sinhvien">Sinh viên</a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-white" href="index.php?controller=khoa">Khoa</a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-white" href="index.php?controller=lop">Lớp</a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-white" href="index.php?controller=monhoc">Môn học</a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-white" href="index.php?controller=diem">Điểm</a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-white" href="index.php?controller=chuyencan">Chuyên cần</a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-white" href="index.php?controller=user">Tài khoản</a>
+        </li>
+    </ul>
 </div>
 
-<div class="content">
+<div class="content p-4" style="width: 100%;">
