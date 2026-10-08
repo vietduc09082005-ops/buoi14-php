@@ -19,15 +19,15 @@
         <?php if (!empty($danhsach)): ?>
             <?php foreach ($danhsach as $sv): ?>
             <tr>
-                <td><?= $sv['ma_sv'] ?></td>
-                <td><?= $sv['ho_ten'] ?></td>
-                <td><?= date('d/m/Y', strtotime($sv['ngay_sinh'])) ?></td>
-                <td><?= $sv['gioi_tinh'] == 1 ? 'Nam' : 'Nữ' ?></td>
-                <td><?= $sv['ten_lop'] ?></td>
+                <td><?= $sv['MASV'] ?></td>
+                <td><?= $sv['HOTEN'] ?></td>
+                <td><?= date('d/m/Y', strtotime($sv['NGAYSINH'])) ?></td>
+                <td><?= $sv['GIOITINH'] ?></td>
+                <td><?= $sv['TENLOP'] ?></td>
                 <td>
-                    <a href="index.php?controller=sinhvien&action=detail&id=<?= $sv['id'] ?>" class="btn btn-sm btn-info">Xem</a>
-                    <a href="index.php?controller=sinhvien&action=edit&id=<?= $sv['id'] ?>" class="btn btn-sm btn-warning">Sửa</a>
-                    <a href="index.php?controller=sinhvien&action=delete&id=<?= $sv['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xóa?')">Xóa</a>
+                    <a href="index.php?controller=sinhvien&action=detail&id=<?= $sv['MASV'] ?>" class="btn btn-sm btn-info">Xem</a>
+                    <a href="index.php?controller=sinhvien&action=edit&id=<?= $sv['MASV'] ?>" class="btn btn-sm btn-warning">Sửa</a>
+                    <a href="index.php?controller=sinhvien&action=delete&id=<?= $sv['MASV'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xóa?')">Xóa</a>
                 </td>
             </tr>
             <?php endforeach; ?>
