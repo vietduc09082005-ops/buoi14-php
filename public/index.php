@@ -2,31 +2,41 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-if (isset($_GET["controller"])) {
-    $controller = $_GET["controller"];
-} else {
-    $controller = "home";
-}
+// Xác định trang cần mở
+$controller = $_GET["controller"] ?? "home";
 
+// Nạp phần đầu trang và sidebar chung
+require_once __DIR__ . "/../app/view/include/header.php";
+require_once __DIR__ . "/../app/view/include/sidebar.php";
+
+// Điều hướng đến nội dung tương ứng
 if ($controller == "sinhvien") {
-    include "../app/controller/sinhvienController.php";
+
+    include __DIR__ . "/../app/controller/sinhvienController.php";
 
 } else if ($controller == "khoa") {
-    include "../app/controller/khoaController.php";
+
+    include __DIR__ . "/../app/controller/khoaController.php";
 
 } else if ($controller == "lop") {
-    include "../app/controller/lopController.php";
+
+    include __DIR__ . "/../app/controller/lopController.php";
 
 } else if ($controller == "user") {
-    include "../app/controller/userController.php";
+
+    include __DIR__ . "/../app/controller/userController.php";
+
+} else if ($controller == "chuyencan") {
+
+    include __DIR__ . "/../app/controller/chuyencanController.php";
 
 } else {
-    require_once "../app/view/include/header.php";
-    require_once "../app/view/include/sidebar.php";
 
     echo "<h2>Trang chủ</h2>";
     echo "<p>Chào mừng đến với website quản lý sinh viên.</p>";
 
-    require_once "../app/view/include/footer.php";
 }
+
+// Nạp phần cuối trang
+require_once __DIR__ . "/../app/view/include/footer.php";
 ?>
