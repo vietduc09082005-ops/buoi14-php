@@ -1,59 +1,59 @@
+
 <?php
+
 include_once __DIR__ . "/../../database.php";
 
-function getAllLop()
+function getAllLop($keyword = "")
 {
     global $conn;
 
+    $keyword = "%" . $keyword . "%";
+
     $sql = "SELECT lop.*, khoa.TENKHOA
-            FROM lop, khoa
-            WHERE lop.MAKHOA = khoa.MAKHOA";
+            FROM lop
+            LEFT JOIN khoa ON lop.MAKHOA = khoa.MAKHOA
+            WHERE lop.MALOP LIKE ?
+               OR lop.TENLOP LIKE ?
+            ORDER BY lop.MALOP";
 
-    $result = mysqli_query($conn, $sql);
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $keyword, $keyword);
+    mysqli_stmt_execute($stmt);
 
-    $danhsach = [];
-
-    while ($row = mysqli_fetch_assoc($result)) {
-        $danhsach[] = $row;
-    }
-
-    return $danhsach;
+    return mysqli_stmt_get_result($stmt);
 }
 
 function getLopById($malop)
 {
     global $conn;
 
-    $sql = "SELECT * FROM lop WHERE MALOP = '$malop'";
-    $result = mysqli_query($conn, $sql);
+    $sql = "SELECT * FROM lop WHERE MALOP = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $malop);
+    mysqli_stmt_execute($stmt);
 
-    return mysqli_fetch_assoc($result);
-}
+    $result = mysqli_stmt_get_result($stmt);
+    $lop = mysqli_fetch_assoc($result);
 
-function getAllKhoa()
-{
-    global $conn;
+    mysqli_stmt_close($stmt);
 
-    $sql = "SELECT * FROM khoa";
-    $result = mysqli_query($conn, $sql);
-
-    $danhsach_khoa = [];
-
-    while ($row = mysqli_fetch_assoc($result)) {
-        $danhsach_khoa[] = $row;
-    }
-
-    return $danhsach_khoa;
+    return $lop;
 }
 
 function addLop($malop, $tenlop, $makhoa)
 {
     global $conn;
 
-    $sql = "INSERT INTO lop(MALOP, TENLOP, MAKHOA)
-            VALUES ('$malop', '$tenlop', '$makhoa')";
+    $sql = "INSERT INTO lop (MALOP, TENLOP, MAKHOA)
+            VALUES (?, ?, ?)";
 
-    return mysqli_query($conn, $sql);
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "sss", $malop, $tenlop, $makhoa);
+
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
 
 function updateLop($malop, $tenlop, $makhoa)
@@ -61,19 +61,30 @@ function updateLop($malop, $tenlop, $makhoa)
     global $conn;
 
     $sql = "UPDATE lop
-            SET TENLOP = '$tenlop',
-                MAKHOA = '$makhoa'
-            WHERE MALOP = '$malop'";
+            SET TENLOP = ?, MAKHOA = ?
+            WHERE MALOP = ?";
 
-    return mysqli_query($conn, $sql);
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "sss", $tenlop, $makhoa, $malop);
+
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
 
 function deleteLop($malop)
 {
     global $conn;
 
-    $sql = "DELETE FROM lop WHERE MALOP = '$malop'";
+    $sql = "DELETE FROM lop WHERE MALOP = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $malop);
 
-    return mysqli_query($conn, $sql);
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
+
 ?>

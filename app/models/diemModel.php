@@ -1,4 +1,6 @@
+
 <?php
+
 include_once __DIR__ . "/../../database.php";
 
 function getAllDiem()
@@ -6,36 +8,45 @@ function getAllDiem()
     global $conn;
 
     $sql = "SELECT diem.*, sinhvien.HOTEN, monhoc.TENMH
-            FROM diem, sinhvien, monhoc
-            WHERE diem.MASV = sinhvien.MASV
-            AND diem.MAMH = monhoc.MAMH";
+            FROM diem
+            INNER JOIN sinhvien ON diem.MASV = sinhvien.MASV
+            INNER JOIN monhoc ON diem.MAMH = monhoc.MAMH";
 
-    $result = mysqli_query($conn, $sql);
-
-    return $result;
+    return mysqli_query($conn, $sql);
 }
 
 function getDiemById($masv, $mamh)
 {
     global $conn;
 
-    $sql = "SELECT * FROM diem 
-            WHERE MASV = '$masv' 
-            AND MAMH = '$mamh'";
+    $sql = "SELECT * FROM diem WHERE MASV = ? AND MAMH = ?";
+    $stmt = mysqli_prepare($conn, $sql);
 
-    $result = mysqli_query($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $masv, $mamh);
+    mysqli_stmt_execute($stmt);
 
-    return mysqli_fetch_assoc($result);
+    $result = mysqli_stmt_get_result($stmt);
+    $data = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+    return $data;
 }
 
 function addDiem($masv, $mamh, $diemcc, $diemgk, $diemck)
 {
     global $conn;
 
-    $sql = "INSERT INTO diem(MASV, MAMH, DIEMCC, DIEMGK, DIEMCK)
-            VALUES ('$masv', '$mamh', '$diemcc', '$diemgk', '$diemck')";
+    $sql = "INSERT INTO diem (MASV, MAMH, DIEMCC, DIEMGK, DIEMCK)
+            VALUES (?, ?, ?, ?, ?)";
 
-    return mysqli_query($conn, $sql);
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ssddd", $masv, $mamh, $diemcc, $diemgk, $diemck);
+
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
 
 function updateDiem($masv, $mamh, $diemcc, $diemgk, $diemck)
@@ -43,23 +54,31 @@ function updateDiem($masv, $mamh, $diemcc, $diemgk, $diemck)
     global $conn;
 
     $sql = "UPDATE diem
-            SET DIEMCC = '$diemcc',
-                DIEMGK = '$diemgk',
-                DIEMCK = '$diemck'
-            WHERE MASV = '$masv'
-            AND MAMH = '$mamh'";
+            SET DIEMCC = ?, DIEMGK = ?, DIEMCK = ?
+            WHERE MASV = ? AND MAMH = ?";
 
-    return mysqli_query($conn, $sql);
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "dddss", $diemcc, $diemgk, $diemck, $masv, $mamh);
+
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
 
 function deleteDiem($masv, $mamh)
 {
     global $conn;
 
-    $sql = "DELETE FROM diem 
-            WHERE MASV = '$masv'
-            AND MAMH = '$mamh'";
+    $sql = "DELETE FROM diem WHERE MASV = ? AND MAMH = ?";
+    $stmt = mysqli_prepare($conn, $sql);
 
-    return mysqli_query($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $masv, $mamh);
+    $result = mysqli_stmt_execute($stmt);
+
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
+
 ?>

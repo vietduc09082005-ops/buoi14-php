@@ -1,69 +1,99 @@
-<?php
-include_once "../app/models/lopModel.php";
 
-if (isset($_GET["action"])) {
-    $action = $_GET["action"];
-} else {
-    $action = "index";
-}
+<?php
+
+include_once __DIR__ . "/../models/lopModel.php";
+
+$action = $_GET["action"] ?? "index";
 
 if ($action == "index") {
 
-    $danhsach = getAllLop();
+    $keyword = trim($_GET["keyword"] ?? "");
+    $danhsach = getAllLop($keyword);
 
-    include "../app/view/lop/index.php";
+    if (!$danhsach) {
+        die("Lỗi lấy danh sách lớp: " . mysqli_error($conn));
+    }
 
-} else if ($action == "add") {
+    include __DIR__ . "/../view/lop/index.php";
 
-    $danhsach_khoa = getAllKhoa();
+} elseif ($action == "add") {
 
-    include "../app/view/lop/add.php";
+    include __DIR__ . "/../view/lop/add.php";
 
-} else if ($action == "store") {
+} elseif ($action == "store") {
 
-    $malop = $_POST["ma_lop"];
-    $tenlop = $_POST["ten_lop"];
-    $makhoa = $_POST["ma_khoa"];
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+        header("Location: index.php?controller=lop");
+        exit;
+    }
 
-    addLop($malop, $tenlop, $makhoa);
+    $malop = trim($_POST["MALOP"] ?? "");
+    $tenlop = trim($_POST["TENLOP"] ?? "");
+    $makhoa = trim($_POST["MAKHOA"] ?? "");
+
+    if ($malop === "" || $tenlop === "" || $makhoa === "") {
+        die("Vui lòng nhập đầy đủ thông tin lớp.");
+    }
+
+    if (!addLop($malop, $tenlop, $makhoa)) {
+        die("Thêm lớp thất bại. Hãy kiểm tra mã lớp và mã khoa.");
+    }
 
     header("Location: index.php?controller=lop");
     exit;
 
-} else if ($action == "edit") {
+} elseif ($action == "edit") {
 
-    $malop = $_GET["id"];
-
+    $malop = $_GET["malop"] ?? "";
     $lop = getLopById($malop);
-    $danhsach_khoa = getAllKhoa();
 
-    include "../app/view/lop/edit.php";
+    if (!$lop) {
+        die("Không tìm thấy lớp cần sửa.");
+    }
 
-} else if ($action == "update") {
+    include __DIR__ . "/../view/lop/edit.php";
 
-    $malop = $_GET["id"];
+} elseif ($action == "update") {
 
-    $tenlop = $_POST["ten_lop"];
-    $makhoa = $_POST["ma_khoa"];
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+        header("Location: index.php?controller=lop");
+        exit;
+    }
 
-    updateLop($malop, $tenlop, $makhoa);
+    $malop = trim($_GET["malop"] ?? "");
+    $tenlop = trim($_POST["TENLOP"] ?? "");
+    $makhoa = trim($_POST["MAKHOA"] ?? "");
+
+    if ($malop === "" || $tenlop === "" || $makhoa === "") {
+        die("Vui lòng nhập đầy đủ thông tin lớp.");
+    }
+
+    if (!updateLop($malop, $tenlop, $makhoa)) {
+        die("Cập nhật lớp thất bại. Hãy kiểm tra lại dữ liệu.");
+    }
 
     header("Location: index.php?controller=lop");
     exit;
 
-} else if ($action == "delete") {
+} elseif ($action == "delete") {
 
-    $malop = $_GET["id"];
+    $malop = $_GET["malop"] ?? "";
 
-    deleteLop($malop);
+    if ($malop === "") {
+        die("Thiếu mã lớp.");
+    }
+
+    if (!deleteLop($malop)) {
+        die("Xóa lớp thất bại. Có thể lớp vẫn đang có sinh viên.");
+    }
 
     header("Location: index.php?controller=lop");
     exit;
 
 } else {
 
-    $danhsach = getAllLop();
-
-    include "../app/view/lop/index.php";
+    header("Location: index.php?controller=lop");
+    exit;
 }
+
 ?>

@@ -1,54 +1,82 @@
+
 <?php
+
 include_once __DIR__ . "/../../database.php";
 
-function getAllMonHoc()
+function getAllMonHoc($keyword = "")
 {
     global $conn;
 
-    $sql = "SELECT * FROM monhoc";
-    $result = mysqli_query($conn, $sql);
+    $keyword = "%" . $keyword . "%";
 
-    return $result;
+    $sql = "SELECT * FROM monhoc
+            WHERE MAMH LIKE ? OR TENMH LIKE ?
+            ORDER BY MAMH";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $keyword, $keyword);
+    mysqli_stmt_execute($stmt);
+
+    return mysqli_stmt_get_result($stmt);
 }
 
 function getMonHocById($mamh)
 {
     global $conn;
 
-    $sql = "SELECT * FROM monhoc WHERE MAMH = '$mamh'";
-    $result = mysqli_query($conn, $sql);
+    $sql = "SELECT * FROM monhoc WHERE MAMH = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $mamh);
+    mysqli_stmt_execute($stmt);
 
-    return mysqli_fetch_assoc($result);
+    $result = mysqli_stmt_get_result($stmt);
+    $monhoc = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+    return $monhoc;
 }
 
-function addMonHoc($mamh, $tenmh, $sotinchi)
+function addMonHoc($mamh, $tenmh)
 {
     global $conn;
 
-    $sql = "INSERT INTO monhoc(MAMH, TENMH, SOTINCHI)
-            VALUES ('$mamh', '$tenmh', '$sotinchi')";
+    $sql = "INSERT INTO monhoc (MAMH, TENMH) VALUES (?, ?)";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $mamh, $tenmh);
 
-    return mysqli_query($conn, $sql);
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
 
-function updateMonHoc($mamh, $tenmh, $sotinchi)
+function updateMonHoc($mamh, $tenmh)
 {
     global $conn;
 
-    $sql = "UPDATE monhoc
-            SET TENMH = '$tenmh',
-                SOTINCHI = '$sotinchi'
-            WHERE MAMH = '$mamh'";
+    $sql = "UPDATE monhoc SET TENMH = ? WHERE MAMH = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $tenmh, $mamh);
 
-    return mysqli_query($conn, $sql);
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
 
 function deleteMonHoc($mamh)
 {
     global $conn;
 
-    $sql = "DELETE FROM monhoc WHERE MAMH = '$mamh'";
+    $sql = "DELETE FROM monhoc WHERE MAMH = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $mamh);
 
-    return mysqli_query($conn, $sql);
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $result;
 }
+
 ?>
